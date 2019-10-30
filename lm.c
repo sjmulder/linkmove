@@ -133,8 +133,10 @@ copy(char *src, char *dst)
 	times[1].tv_sec = src_sb.st_ctimespec.tv_sec;
 	times[1].tv_usec = (suseconds_t)(src_sb.st_ctimespec.tv_nsec / 1000);
 #else
-	times[0] = src_sb.st_atim;
-	times[1] = src_sb.st_ctim;
+	times[0].tv_sec = src_sb.st_atim.tv_sec;
+	times[0].tv_usec = (suseconds_t)(src_sb.st_atim.tv_nsec / 1000);
+	times[1].tv_sec = src_sb.st_ctim.tv_sec;
+	times[1].tv_usec = (suseconds_t)(src_sb.st_ctim.tv_nsec / 1000);
 #endif
 
 	if (futimes(dst_fd, times) == -1)
