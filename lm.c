@@ -34,10 +34,12 @@ main(int argc, char **argv)
 }
 
 /*
- * Moves the file src to dst, leaving a symlink in to dst at src. dst
- * must not be a directory. The move is performed with a rename if src
- * and dst are on the same device, or by copying with copy() (see below)
- * if not.
+ * Moves the file src to dst, leaving a symlink in to dst at src. The
+ * move is performed with a rename if src and dst are on the same
+ * device, or by copying with copy() (see below) if not.
+ *
+ * src must be a file path.
+ * dst must be a file path.
  */
 static void
 link_move(char *src, char *dst)
@@ -55,6 +57,12 @@ link_move(char *src, char *dst)
 		err(1, NULL);
 }
 
+/*
+ * Perform link_move() on a list of source files.
+ *
+ * src must be file paths.
+ * dst may be a file or directory path.
+ */
 static void
 link_move_multi(char **srcs, int count, char *dst)
 {
@@ -82,6 +90,9 @@ link_move_multi(char **srcs, int count, char *dst)
 /*
  * Copies the file src to dst. dst must not be a directory. Dates,
  * ownership and permissions are copied insofar possible.
+ *
+ * src must be a file path.
+ * dst must be a file path.
  */
 static void
 copy(char *src, char *dst)
