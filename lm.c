@@ -10,13 +10,16 @@
 
 #include <sys/stat.h>
 #include <sys/time.h>
+#include <sys/types.h>
 #include <fcntl.h>
 #include <unistd.h>
+#include <dirent.h>
 #include <libgen.h>
 #include <err.h>
 
 static void link_move(char *, char *);
 static void link_move_multi(char **, int, char *);
+static void move(char *, char *);
 static void copy(char *, char *);
 static char *rebase(char *, char *);
 static struct timeval ts_to_tv(struct timespec);
@@ -38,21 +41,14 @@ main(int argc, char **argv)
  * move is performed with a rename if src and dst are on the same
  * device, or by copying with copy() (see below) if not.
  *
- * src must be a file path.
- * dst must be a file path.
+ * src may be a file or directory path.
+ * dst must be the target path, not the parent directory.
  */
 static void
 link_move(char *src, char *dst)
 {
-	if (rename(src, dst) == -1) {
-		if (errno != EXDEV)
-			err(1, NULL);
-		if (unlink(dst) == -1 && errno != ENOENT)
-			err(1, "%s", dst);
-		copy(src, dst);
-		if (unlink(src) == -1)
-			err(1, "%s", src);
-	}
+	move(src, dst);
+
 	if (symlink(dst, src) == -1)
 		err(1, NULL);
 }
@@ -60,8 +56,8 @@ link_move(char *src, char *dst)
 /*
  * Perform link_move() on a list of source files.
  *
- * src must be file paths.
- * dst may be a file or directory path.
+ * src may be file or directory paths.
+ * dst may be a file or parent directory path.
  */
 static void
 link_move_multi(char **srcs, int count, char *dst)
@@ -85,6 +81,58 @@ link_move_multi(char **srcs, int count, char *dst)
 		errx(1, "%s: not a directory", dst);
 	else
 		link_move(srcs[0], dst);
+}
+
+/*
+ * Rename src to dst, or copy() and delete if on different filesystems.
+ *
+ * src may be a file or directory path.
+ * dst must be the full new path, not just the parent directory
+ */
+static void
+move(char *src, char *dst)
+{
+	DIR *dir;
+	struct dirent *ent;
+	struct stat src_sb;
+	char *ent_src, *ent_dst;
+
+	if (rename(src, dst) != -1)
+		; /* good, done */
+	else if (errno != EXDEV)
+		err(1, NULL);
+	else if ((dir = opendir(src))) {
+		if (stat(src, &src_sb) == -1)
+			err(1, "%s", src);
+		if (mkdir(dst, src_sb.st_mode) == -1)
+			err(1, "%s", dst);
+		if (chown(dst, src_sb.st_uid, src_sb.st_gid) == -1)
+			warn("%s", dst);
+		while ((ent = readdir(dir))) {
+			if (strcmp(ent->d_name, ".") == 0)
+				continue;
+			if (strcmp(ent->d_name, "..") == 0)
+				continue;
+			asprintf(&ent_src, "%s/%s", src, ent->d_name);
+			if (!ent_src)
+				err(1, NULL);
+			asprintf(&ent_dst, "%s/%s", dst, ent->d_name);
+			if (!ent_dst)
+				err(1, NULL);
+			move(ent_src, ent_dst);
+			free(ent_dst);
+			free(ent_src);
+		}
+		closedir(dir);
+		if (rmdir(src) == -1)
+			err(1, "%s", dst);
+	} else if (errno != ENOTDIR)
+		err(1, "%s", src);
+	else {
+		copy(src, dst);
+		if (unlink(src) == -1)
+			err(1, "%s", src);
+	}
 }
 
 /*
