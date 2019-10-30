@@ -33,6 +33,11 @@ main(int argc, char **argv)
 	struct stat dst_sb;
 	int c, i, is_dir = 0;
 
+#ifdef __OpenBSD__
+	if (pledge("stdio rpath wpath cpath fattr chown", NULL) == -1)
+		err(1, NULL);
+#endif
+
 	if (argc < 3)
 		usage();
 
