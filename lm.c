@@ -57,8 +57,8 @@ link_move_multi(char **srcs, int count, char *dst)
 	if (is_dir)
 		for (i = 0; i < count; i++) {
 			dst_full = rebase_path(srcs[i], dst);
-			move(srcs[i], dst);
-			if (symlink(dst, srcs[i]) == -1)
+			move(srcs[i], dst_full);
+			if (symlink(dst_full, srcs[i]) == -1)
 				err(1, NULL);
 			free(dst_full);
 		}
