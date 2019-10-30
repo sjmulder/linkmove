@@ -1,3 +1,7 @@
+#ifdef _GNU
+#define _GNU_SOURCE
+#endif
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdnoreturn.h>
@@ -15,6 +19,7 @@ static noreturn void usage(void);
 static char *rebase(char *, char *);
 static void link_move(char *, char *);
 static void copy(char *, char *);
+static struct timeval ts_to_tv(struct timespec);
 
 int
 main(int argc, char **argv)
@@ -128,15 +133,11 @@ copy(char *src, char *dst)
 	}
 
 #ifdef __APPLE__
-	times[0].tv_sec = src_sb.st_atimespec.tv_sec;
-	times[0].tv_usec = (suseconds_t)(src_sb.st_atimespec.tv_nsec / 1000);
-	times[1].tv_sec = src_sb.st_ctimespec.tv_sec;
-	times[1].tv_usec = (suseconds_t)(src_sb.st_ctimespec.tv_nsec / 1000);
+	times[0] = ts_to_tv(src_sb.st_atimespec);
+	times[1] = ts_to_tv(src_sb.st_ctimespec);
 #else
-	times[0].tv_sec = src_sb.st_atim.tv_sec;
-	times[0].tv_usec = (suseconds_t)(src_sb.st_atim.tv_nsec / 1000);
-	times[1].tv_sec = src_sb.st_ctim.tv_sec;
-	times[1].tv_usec = (suseconds_t)(src_sb.st_ctim.tv_nsec / 1000);
+	times[0] = ts_to_tv(src_sb.st_atim);
+	times[1] = ts_to_tv(src_sb.st_ctim);
 #endif
 
 	if (futimes(dst_fd, times) == -1)
@@ -148,4 +149,14 @@ copy(char *src, char *dst)
 		err(1, "%s", dst);
 	if (close(src_fd) == -1)
 		err(1, "%s", src);
+}
+
+static struct
+timeval ts_to_tv(struct timespec ts)
+{
+	struct timeval tv;
+	tv.tv_sec = ts.tv_sec;
+	tv.tv_usec = (suseconds_t)(ts.tv_nsec / 1000);
+
+	return tv;
 }
