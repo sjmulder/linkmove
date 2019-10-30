@@ -1,8 +1,8 @@
 CFLAGS += -Wall -Wextra
 
-all: lm
+all: linkmove
 
 clean:
-	rm -f lm
+	rm -f linkmove
 
 .PHONY: all clean

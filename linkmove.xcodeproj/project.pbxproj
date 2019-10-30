@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		36A1BC3123698EB6001D4FCE /* lm.c in Sources */ = {isa = PBXBuildFile; fileRef = 36A1BC3023698EB6001D4FCE /* lm.c */; };
+		36A1BC3123698EB6001D4FCE /* linkmove.c in Sources */ = {isa = PBXBuildFile; fileRef = 36A1BC3023698EB6001D4FCE /* linkmove.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -23,8 +23,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		36A1BC2623698E82001D4FCE /* lm */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = lm; sourceTree = BUILT_PRODUCTS_DIR; };
-		36A1BC3023698EB6001D4FCE /* lm.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = lm.c; sourceTree = "<group>"; };
+		36A1BC2623698E82001D4FCE /* linkmove */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = linkmove; sourceTree = BUILT_PRODUCTS_DIR; };
+		36A1BC3023698EB6001D4FCE /* linkmove.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = linkmove.c; sourceTree = "<group>"; };
 		36A1BC3223699D46001D4FCE /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		36A1BC3323699E06001D4FCE /* LICENSE.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = LICENSE.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -43,7 +43,7 @@
 		36A1BC1D23698E82001D4FCE = {
 			isa = PBXGroup;
 			children = (
-				36A1BC2823698E82001D4FCE /* lm */,
+				36A1BC2823698E82001D4FCE /* linkmove */,
 				36A1BC2723698E82001D4FCE /* Products */,
 			);
 			sourceTree = "<group>";
@@ -51,27 +51,27 @@
 		36A1BC2723698E82001D4FCE /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				36A1BC2623698E82001D4FCE /* lm */,
+				36A1BC2623698E82001D4FCE /* linkmove */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		36A1BC2823698E82001D4FCE /* lm */ = {
+		36A1BC2823698E82001D4FCE /* linkmove */ = {
 			isa = PBXGroup;
 			children = (
-				36A1BC3023698EB6001D4FCE /* lm.c */,
+				36A1BC3023698EB6001D4FCE /* linkmove.c */,
 				36A1BC3223699D46001D4FCE /* README.md */,
 				36A1BC3323699E06001D4FCE /* LICENSE.md */,
 			);
-			name = lm;
+			name = linkmove;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		36A1BC2523698E82001D4FCE /* lm */ = {
+		36A1BC2523698E82001D4FCE /* linkmove */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 36A1BC2D23698E82001D4FCE /* Build configuration list for PBXNativeTarget "lm" */;
+			buildConfigurationList = 36A1BC2D23698E82001D4FCE /* Build configuration list for PBXNativeTarget "linkmove" */;
 			buildPhases = (
 				36A1BC2223698E82001D4FCE /* Sources */,
 				36A1BC2323698E82001D4FCE /* Frameworks */,
@@ -81,9 +81,9 @@
 			);
 			dependencies = (
 			);
-			name = lm;
-			productName = lm;
-			productReference = 36A1BC2623698E82001D4FCE /* lm */;
+			name = linkmove;
+			productName = linkmove;
+			productReference = 36A1BC2623698E82001D4FCE /* linkmove */;
 			productType = "com.apple.product-type.tool";
 		};
 /* End PBXNativeTarget section */
@@ -100,7 +100,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 36A1BC2123698E82001D4FCE /* Build configuration list for PBXProject "lm" */;
+			buildConfigurationList = 36A1BC2123698E82001D4FCE /* Build configuration list for PBXProject "linkmove" */;
 			compatibilityVersion = "Xcode 9.3";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -113,7 +113,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				36A1BC2523698E82001D4FCE /* lm */,
+				36A1BC2523698E82001D4FCE /* linkmove */,
 			);
 		};
 /* End PBXProject section */
@@ -123,7 +123,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				36A1BC3123698EB6001D4FCE /* lm.c in Sources */,
+				36A1BC3123698EB6001D4FCE /* linkmove.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -262,7 +262,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		36A1BC2123698E82001D4FCE /* Build configuration list for PBXProject "lm" */ = {
+		36A1BC2123698E82001D4FCE /* Build configuration list for PBXProject "linkmove" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				36A1BC2B23698E82001D4FCE /* Debug */,
@@ -271,7 +271,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		36A1BC2D23698E82001D4FCE /* Build configuration list for PBXNativeTarget "lm" */ = {
+		36A1BC2D23698E82001D4FCE /* Build configuration list for PBXNativeTarget "linkmove" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				36A1BC2E23698E82001D4FCE /* Debug */,
