@@ -63,7 +63,7 @@ main(int argc, char **argv)
 static void
 link_move_multi(char **srcs, int count, char *dst)
 {
-	char *dst_full;
+	char *item_dst;
 	struct stat dst_sb;
 	int i, is_dir = 0;
 
@@ -74,11 +74,11 @@ link_move_multi(char **srcs, int count, char *dst)
 
 	if (is_dir)
 		for (i = 0; i < count; i++) {
-			dst_full = rebase_path(srcs[i], dst);
-			move(srcs[i], dst_full);
-			if (symlink(dst_full, srcs[i]) == -1)
+			item_dst = rebase_path(srcs[i], dst);
+			move(srcs[i], item_dst);
+			if (symlink(item_dst, srcs[i]) == -1)
 				err(1, NULL);
-			free(dst_full);
+			free(item_dst);
 		}
 	else if (count > 1)
 		errx(1, "%s: not a directory", dst);
