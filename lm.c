@@ -20,7 +20,7 @@
 static void link_move_multi(char **, int, char *);
 static void move(char *, char *);
 static void copy(char *, char *);
-static char *rebase(char *, char *);
+static char *rebase_path(char *, char *);
 static struct timeval ts_to_tv(struct timespec);
 static noreturn void usage(void);
 
@@ -56,7 +56,7 @@ link_move_multi(char **srcs, int count, char *dst)
 
 	if (is_dir)
 		for (i = 0; i < count; i++) {
-			dst_full = rebase(srcs[i], dst);
+			dst_full = rebase_path(srcs[i], dst);
 			move(srcs[i], dst);
 			if (symlink(dst, srcs[i]) == -1)
 				err(1, NULL);
@@ -179,7 +179,7 @@ copy(char *src, char *dst)
  * appended to dst_dir, separated by a /.
  */
 static char *
-rebase(char *src, char *dst_dir)
+rebase_path(char *src, char *dst_dir)
 {
 	char *src_copy, *src_name, *dst;
 
