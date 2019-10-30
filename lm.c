@@ -62,8 +62,8 @@ usage(void)
 }
 
 /*
- * Returns a newly allocated string with the filename portion of src appended
- * to dst_dir, separated by a /.
+ * Returns a newly allocated string with the filename portion of src
+ * appended to dst_dir, separated by a /.
  */
 static char *
 rebase(char *src, char *dst_dir)
@@ -83,9 +83,10 @@ rebase(char *src, char *dst_dir)
 }
 
 /*
- * Moves the file src to dst, leaving a symlink in to dst at src. dst must not
- * be a directory. The move is performed with a rename if src and dst are on
- * the same device, or by copying with copy() (see below) if not.
+ * Moves the file src to dst, leaving a symlink in to dst at src. dst
+ * must not be a directory. The move is performed with a rename if src
+ * and dst are on the same device, or by copying with copy() (see below)
+ * if not.
  */
 static void
 link_move(char *src, char *dst)
@@ -104,8 +105,8 @@ link_move(char *src, char *dst)
 }
 
 /*
- * Copies the file src to dst. dst must not be a directory. Dates, ownership
- * and permissions are copied insofar possible.
+ * Copies the file src to dst. dst must not be a directory. Dates,
+ * ownership and permissions are copied insofar possible.
  */
 static void
 copy(char *src, char *dst)
