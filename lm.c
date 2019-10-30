@@ -13,6 +13,7 @@
 #include <sys/types.h>
 #include <fcntl.h>
 #include <unistd.h>
+#include <getopt.h>
 #include <dirent.h>
 #include <libgen.h>
 #include <err.h>
@@ -24,13 +25,30 @@ static char *rebase_path(char *, char *);
 static struct timeval ts_to_tv(struct timespec);
 static noreturn void usage(void);
 
+static int verbose = 0;
+
 int
 main(int argc, char **argv)
 {
+	int c;
+
 	if (argc < 3)
 		usage();
 
-	link_move_multi(&argv[1], argc-2, argv[argc-1]);
+	while ((c = getopt(argc, argv, "v")) != -1) {
+		switch (c) {
+		case 'v':
+			verbose = 1;
+			break;
+		default:
+			usage();
+		}
+	}
+
+	argc -= optind;
+	argv += optind;
+
+	link_move_multi(argv, argc-1, argv[argc-1]);
 
 	return 0;
 }
@@ -84,6 +102,9 @@ move(char *src, char *dst)
 	struct dirent *ent;
 	struct stat src_sb;
 	char *ent_src, *ent_dst;
+
+	if (verbose)
+		fprintf(stderr, "%s\n", dst);
 
 	if (rename(src, dst) != -1)
 		; /* good, done */
@@ -208,6 +229,6 @@ timeval ts_to_tv(struct timespec ts)
 static noreturn void
 usage(void)
 {
-	fprintf(stderr, "usage: lm <source> [...] <target>\n");
+	fprintf(stderr, "usage: lm [-v] source [...] target\n");
 	exit(1);
 }
