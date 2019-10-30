@@ -18,7 +18,6 @@
 #include <libgen.h>
 #include <err.h>
 
-static void link_move_multi(char **, int, char *);
 static void move(char *, char *);
 static void copy(char *, char *);
 static char *rebase_path(char *, char *);
@@ -30,7 +29,9 @@ static int verbose = 0;
 int
 main(int argc, char **argv)
 {
-	int c;
+	char *dst, *item_dst;
+	struct stat dst_sb;
+	int c, i, is_dir = 0;
 
 	if (argc < 3)
 		usage();
@@ -48,24 +49,7 @@ main(int argc, char **argv)
 	argc -= optind;
 	argv += optind;
 
-	link_move_multi(argv, argc-1, argv[argc-1]);
-
-	return 0;
-}
-
-/*
- * move() the files or directories srcs to dst, leaving symlinks at
- * srcs.
- *
- * src may be file or directory paths.
- * dst may be a file or parent directory path.
- */
-static void
-link_move_multi(char **srcs, int count, char *dst)
-{
-	char *item_dst;
-	struct stat dst_sb;
-	int i, is_dir = 0;
+	dst = argv[argc-1];
 
 	if (stat(dst, &dst_sb) != -1)
 		is_dir = S_ISDIR(dst_sb.st_mode);
@@ -73,18 +57,18 @@ link_move_multi(char **srcs, int count, char *dst)
 		err(1, "%s", dst);
 
 	if (is_dir)
-		for (i = 0; i < count; i++) {
-			item_dst = rebase_path(srcs[i], dst);
-			move(srcs[i], item_dst);
-			if (symlink(item_dst, srcs[i]) == -1)
+		for (i = 0; i < argc-1; i++) {
+			item_dst = rebase_path(argv[i], dst);
+			move(argv[i], item_dst);
+			if (symlink(item_dst, argv[i]) == -1)
 				err(1, NULL);
 			free(item_dst);
 		}
-	else if (count > 1)
+	else if (argc > 1)
 		errx(1, "%s: not a directory", dst);
 	else {
-		move(srcs[0], dst);
-		if (symlink(dst, srcs[0]) == -1)
+		move(argv[0], dst);
+		if (symlink(dst, argv[0]) == -1)
 			err(1, NULL);
 	}
 }
