@@ -15,12 +15,12 @@
 #include <libgen.h>
 #include <err.h>
 
-static noreturn void usage(void);
-static char *rebase(char *, char *);
 static void link_move(char *, char *);
 static void link_move_multi(char **, int, char *);
 static void copy(char *, char *);
+static char *rebase(char *, char *);
 static struct timeval ts_to_tv(struct timespec);
+static noreturn void usage(void);
 
 int
 main(int argc, char **argv)
@@ -31,34 +31,6 @@ main(int argc, char **argv)
 	link_move_multi(&argv[1], argc-2, argv[argc-1]);
 
 	return 0;
-}
-
-static noreturn void
-usage(void)
-{
-	fprintf(stderr, "usage: lm <source> [...] <target>\n");
-	exit(1);
-}
-
-/*
- * Returns a newly allocated string with the filename portion of src
- * appended to dst_dir, separated by a /.
- */
-static char *
-rebase(char *src, char *dst_dir)
-{
-	char *src_copy, *src_name, *dst;
-
-	if (!(src_copy = strdup(src)))
-		err(1, NULL);
-	if (!(src_name = basename(src_copy)))
-		err(1, "%s", src);
-	if (asprintf(&dst, "%s/%s", dst_dir, src_name) == -1)
-		err(1, NULL);
-
-	free(src_copy);
-
-	return dst;
 }
 
 /*
@@ -155,6 +127,27 @@ copy(char *src, char *dst)
 		err(1, "%s", src);
 }
 
+/*
+ * Returns a newly allocated string with the filename portion of src
+ * appended to dst_dir, separated by a /.
+ */
+static char *
+rebase(char *src, char *dst_dir)
+{
+	char *src_copy, *src_name, *dst;
+
+	if (!(src_copy = strdup(src)))
+		err(1, NULL);
+	if (!(src_name = basename(src_copy)))
+		err(1, "%s", src);
+	if (asprintf(&dst, "%s/%s", dst_dir, src_name) == -1)
+		err(1, NULL);
+
+	free(src_copy);
+
+	return dst;
+}
+
 static struct
 timeval ts_to_tv(struct timespec ts)
 {
@@ -163,4 +156,11 @@ timeval ts_to_tv(struct timespec ts)
 	tv.tv_usec = (suseconds_t)(ts.tv_nsec / 1000);
 
 	return tv;
+}
+
+static noreturn void
+usage(void)
+{
+	fprintf(stderr, "usage: lm <source> [...] <target>\n");
+	exit(1);
 }
