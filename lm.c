@@ -18,38 +18,17 @@
 static noreturn void usage(void);
 static char *rebase(char *, char *);
 static void link_move(char *, char *);
+static void link_move_multi(char **, int, char *);
 static void copy(char *, char *);
 static struct timeval ts_to_tv(struct timespec);
 
 int
 main(int argc, char **argv)
 {
-	char *dst, *dst_full;
-	struct stat dst_sb;
-	int i, dst_isdir = 0;
-
-	(void)argv;
-
 	if (argc < 3)
 		usage();
 
-	dst = argv[argc-1];
-
-	if (stat(dst, &dst_sb) != -1)
-		dst_isdir = S_ISDIR(dst_sb.st_mode);
-	else if (errno != ENOENT)
-		err(1, "%s", dst);
-
-	if (dst_isdir)
-		for (i = 1; i < argc-1; i++) {
-			dst_full = rebase(argv[i], argv[argc-1]);
-			link_move(argv[i], dst_full);
-			free(dst_full);
-		}
-	else if (argc > 3)
-		errx(1, "%s: not a directory", dst);
-	else
-		link_move(argv[1], dst);
+	link_move_multi(&argv[1], argc-2, argv[argc-1]);
 
 	return 0;
 }
@@ -102,6 +81,30 @@ link_move(char *src, char *dst)
 	}
 	if (symlink(dst, src) == -1)
 		err(1, NULL);
+}
+
+static void
+link_move_multi(char **srcs, int count, char *dst)
+{
+	char *dst_full;
+	struct stat dst_sb;
+	int i, is_dir = 0;
+
+	if (stat(dst, &dst_sb) != -1)
+		is_dir = S_ISDIR(dst_sb.st_mode);
+	else if (errno != ENOENT)
+		err(1, "%s", dst);
+
+	if (is_dir)
+		for (i = 0; i < count; i++) {
+			dst_full = rebase(srcs[i], dst);
+			link_move(srcs[i], dst_full);
+			free(dst_full);
+		}
+	else if (count > 1)
+		errx(1, "%s: not a directory", dst);
+	else
+		link_move(srcs[0], dst);
 }
 
 /*
