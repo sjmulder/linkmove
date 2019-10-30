@@ -17,7 +17,6 @@
 #include <libgen.h>
 #include <err.h>
 
-static void link_move(char *, char *);
 static void link_move_multi(char **, int, char *);
 static void move(char *, char *);
 static void copy(char *, char *);
@@ -37,24 +36,8 @@ main(int argc, char **argv)
 }
 
 /*
- * Moves the file src to dst, leaving a symlink in to dst at src. The
- * move is performed with a rename if src and dst are on the same
- * device, or by copying with copy() (see below) if not.
- *
- * src may be a file or directory path.
- * dst must be the target path, not the parent directory.
- */
-static void
-link_move(char *src, char *dst)
-{
-	move(src, dst);
-
-	if (symlink(dst, src) == -1)
-		err(1, NULL);
-}
-
-/*
- * Perform link_move() on a list of source files.
+ * move() the files or directories srcs to dst, leaving symlinks at
+ * srcs.
  *
  * src may be file or directory paths.
  * dst may be a file or parent directory path.
@@ -74,13 +57,18 @@ link_move_multi(char **srcs, int count, char *dst)
 	if (is_dir)
 		for (i = 0; i < count; i++) {
 			dst_full = rebase(srcs[i], dst);
-			link_move(srcs[i], dst_full);
+			move(srcs[i], dst);
+			if (symlink(dst, srcs[i]) == -1)
+				err(1, NULL);
 			free(dst_full);
 		}
 	else if (count > 1)
 		errx(1, "%s: not a directory", dst);
-	else
-		link_move(srcs[0], dst);
+	else {
+		move(srcs[0], dst);
+		if (symlink(dst, srcs[0]) == -1)
+			err(1, NULL);
+	}
 }
 
 /*
