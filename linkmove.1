@@ -1,4 +1,4 @@
-.Dd Oct 30, 2019
+.Dd October 30, 2019
 .Dt LINKMOVE 1
 .Os
 .Sh NAME
@@ -48,6 +48,8 @@ since the
 .Xr mv 1
 .Ar target
 argument may refer to either the full path or a parent directy.
+.Sh EXIT STATUS
+Zero on success, non-zero if an error occured.
 .Sh EXAMPLES
 Rename and symlink
 .Li old.txt
@@ -74,11 +76,9 @@ $ linkmove foo bar /nfs
 Here, the move was across filesystem boundaries so the
 .Li foo
 directory was copied recursively.
-.Sh EXIT STATUS
-Zero on success, non-zero if an error occured.
 .Sh SEE ALSO
-.Xr mv 1 ,
-.Xr ln 1
+.Xr ln 1 ,
+.Xr mv 1
 .Sh AUTHORS
 .An Sijmen J. Mulder
 .Aq Mt ik@sjmulder.nl
