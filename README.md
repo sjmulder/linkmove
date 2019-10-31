@@ -33,11 +33,11 @@ Examples
 --------
 Rename and symlink old.txt to new.txt and verify the results:
 
-   $ linkmove old.txt new.txt
+    $ linkmove old.txt new.txt
 
-   $ file -h old.txt new.txt
-   old.txt: symbolic link to new.txt
-   new.txt: ASCII text
+    $ file -h old.txt new.txt
+    old.txt: symbolic link to new.txt
+    new.txt: ASCII text
 
 Link-move multipe items with verbose output:
 
