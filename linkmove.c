@@ -71,7 +71,7 @@ main(int argc, char **argv)
 				err(1, NULL);
 			free(item_dst);
 		}
-	else if (argc > 1)
+	else if (argc > 2)
 		errx(1, "%s: not a directory", dst);
 	else {
 		cleanup_path(argv[0]);
