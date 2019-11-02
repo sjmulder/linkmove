@@ -39,9 +39,6 @@ main(int argc, char **argv)
 		err(1, NULL);
 #endif
 
-	if (argc < 3)
-		usage();
-
 	while ((c = getopt(argc, argv, "v")) != -1) {
 		switch (c) {
 		case 'v':
@@ -54,6 +51,9 @@ main(int argc, char **argv)
 
 	argc -= optind;
 	argv += optind;
+
+	if (argc < 2)
+		usage();
 
 	dst = argv[argc-1];
 
