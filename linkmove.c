@@ -233,8 +233,8 @@ join_paths(char *left, char *right)
 	return ret;
 }
 
-static struct
-timeval ts_to_tv(struct timespec ts)
+static struct timeval
+ts_to_tv(struct timespec ts)
 {
 	struct timeval tv;
 	tv.tv_sec = ts.tv_sec;
