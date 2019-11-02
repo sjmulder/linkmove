@@ -234,6 +234,6 @@ timeval ts_to_tv(struct timespec ts)
 static noreturn void
 usage(void)
 {
-	fprintf(stderr, "usage: linkmove [-v] source [...] target\n");
+	fprintf(stderr, "usage: linkmove [-v] source ... target\n");
 	exit(1);
 }
