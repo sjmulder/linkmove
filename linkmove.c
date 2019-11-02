@@ -20,6 +20,7 @@
 
 static void move(char *, char *);
 static void copy(char *, char *);
+static void cleanup_path(char *);
 static char *rebase_path(char *, char *);
 static struct timeval ts_to_tv(struct timespec);
 static noreturn void usage(void);
@@ -63,6 +64,7 @@ main(int argc, char **argv)
 
 	if (is_dir)
 		for (i = 0; i < argc-1; i++) {
+			cleanup_path(argv[i]);
 			item_dst = rebase_path(argv[i], dst);
 			move(argv[i], item_dst);
 			if (symlink(item_dst, argv[i]) == -1)
@@ -72,6 +74,7 @@ main(int argc, char **argv)
 	else if (argc > 1)
 		errx(1, "%s: not a directory", dst);
 	else {
+		cleanup_path(argv[0]);
 		move(argv[0], dst);
 		if (symlink(dst, argv[0]) == -1)
 			err(1, NULL);
@@ -182,6 +185,19 @@ copy(char *src, char *dst)
 		err(1, "%s", dst);
 	if (close(src_fd) == -1)
 		err(1, "%s", src);
+}
+
+/*
+ * Remove trailing slash. Modifies path in-place.
+ */
+static void
+cleanup_path(char *path)
+{
+	size_t len;
+
+	len = strlen(path);
+	while (len > 1 && path[len-1] == '/')
+		path[--len] = '\0';
 }
 
 /*
