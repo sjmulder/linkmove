@@ -1,7 +1,3 @@
-#ifdef _GNU
-#define _GNU_SOURCE
-#endif
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdnoreturn.h>
@@ -22,6 +18,7 @@ static void move(char *, char *);
 static void copy(char *, char *);
 static void cleanup_path(char *);
 static char *rebase_path(char *, char *);
+static char *join_paths(char *, char *);
 static struct timeval ts_to_tv(struct timespec);
 static noreturn void usage(void);
 
@@ -114,12 +111,8 @@ move(char *src, char *dst)
 				continue;
 			if (strcmp(ent->d_name, "..") == 0)
 				continue;
-			asprintf(&ent_src, "%s/%s", src, ent->d_name);
-			if (!ent_src)
-				err(1, NULL);
-			asprintf(&ent_dst, "%s/%s", dst, ent->d_name);
-			if (!ent_dst)
-				err(1, NULL);
+			ent_src = join_paths(src, ent->d_name);
+			ent_dst = join_paths(dst, ent->d_name);
 			move(ent_src, ent_dst);
 			free(ent_dst);
 			free(ent_src);
@@ -213,12 +206,31 @@ rebase_path(char *src, char *dst_dir)
 		err(1, NULL);
 	if (!(src_name = basename(src_copy)))
 		err(1, "%s", src);
-	if (asprintf(&dst, "%s/%s", dst_dir, src_name) == -1)
-		err(1, NULL);
 
+	dst = join_paths(dst_dir, src_name);
 	free(src_copy);
 
 	return dst;
+}
+
+/*
+ * Returns a newly allocated string containing the two arguments joined
+ * by a slash.
+ */
+static char *
+join_paths(char *left, char *right)
+{
+	size_t sz;
+	int n;
+	char *ret;
+
+	sz = strlen(left) + strlen(right) + 2;
+	if (!(ret = malloc(sz)))
+		err(1, NULL);
+	if ((n = snprintf(ret, sz, "%s/%s", left, right)) >= sz)
+		errx(1, "snprintf overflow");
+
+	return ret;
 }
 
 static struct
